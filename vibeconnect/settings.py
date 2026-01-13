@@ -5,6 +5,7 @@ Production-ready for Render Deployment.
 
 from pathlib import Path
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -12,16 +13,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ============================
 # SECURITY
 # ============================
-# ✅ Use environment variable in production
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-this")
-
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
+    os.getenv("RENDER_EXTERNAL_URL", ""),
 ]
+CSRF_TRUSTED_ORIGINS = [x for x in CSRF_TRUSTED_ORIGINS if x]
 
 
 # ============================
@@ -35,10 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # ✅ Channels
     "channels",
-
-    # ✅ Your app
     "chat",
 ]
 
@@ -48,8 +47,6 @@ INSTALLED_APPS = [
 # ============================
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # ✅ Whitenoise (static file serving in production)
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -70,10 +67,7 @@ ROOT_URLCONF = "vibeconnect.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-
-        # ✅ You use templates folder
         "DIRS": [BASE_DIR / "templates"],
-
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -89,7 +83,6 @@ TEMPLATES = [
 # ============================
 # ASGI / WSGI
 # ============================
-# ✅ Channels uses ASGI
 ASGI_APPLICATION = "vibeconnect.asgi.application"
 WSGI_APPLICATION = "vibeconnect.wsgi.application"
 
@@ -97,17 +90,14 @@ WSGI_APPLICATION = "vibeconnect.wsgi.application"
 # ============================
 # DATABASE
 # ============================
-# ✅ Render free uses sqlite unless you add postgres.
-# Keep sqlite for now. We'll upgrade later.
-import dj_database_url
-
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=True,
     )
 }
+
 
 # ============================
 # PASSWORD VALIDATORS
@@ -133,14 +123,9 @@ USE_TZ = True
 # STATIC FILES
 # ============================
 STATIC_URL = "/static/"
-
-# ✅ In dev: use BASE_DIR/static
 STATICFILES_DIRS = [BASE_DIR / "static"]
-
-# ✅ In production: collectstatic output
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# ✅ best storage for whitenoise
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
@@ -157,7 +142,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ============================
 # CHANNELS (WebSockets)
 # ============================
-# ✅ Use Redis in production, fallback to InMemory in local
 REDIS_URL = os.getenv("REDIS_URL", "")
 
 if REDIS_URL:
@@ -170,7 +154,6 @@ if REDIS_URL:
         }
     }
 else:
-    # local dev
     CHANNEL_LAYERS = {
         "default": {
             "BACKEND": "channels.layers.InMemoryChannelLayer",
