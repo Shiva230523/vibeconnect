@@ -16,8 +16,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-this")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+
 ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
+
+# ✅ Render domain fallback (so it won't crash even if env missing)
+if os.getenv("RENDER_EXTERNAL_HOSTNAME"):
+    ALLOWED_HOSTS.append(os.getenv("RENDER_EXTERNAL_HOSTNAME"))
+    
+ALLOWED_HOSTS = ["*"]
 
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL", "")
 
