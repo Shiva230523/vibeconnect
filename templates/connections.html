@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connections | VibeConnect</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+
+<body class="page">
+
+  <div class="box wide">
+
+    <div class="page-head">
+      <h2>Your Connections</h2>
+      <a class="btn outline small" href="/chat/">Back to Chat</a>
+    </div>
+
+    <p class="muted">
+      You can only reconnect when the other person is online.
+      Maximum 10 connections allowed.
+    </p>
+
+    <div class="list">
+      {% for c in connections %}
+      <div class="item">
+        <div class="item-left">
+          <div class="avatar">{{ c.connected_nickname|slice:":1"|upper }}</div>
+          <div>
+            <div class="item-title">{{c.connected_nickname}}</div>
+            <div class="muted small">Saved: {{c.created_at}}</div>
+          </div>
+        </div>
+
+        <div class="item-actions">
+          <a class="btn small primary" href="/requests/send/{{c.connected_user.id}}/">
+            Send Reconnect Request
+          </a>
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty">
+        No connections yet. Use “Interested” during chat to save.
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+</body>
+</html>

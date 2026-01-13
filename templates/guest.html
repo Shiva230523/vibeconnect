@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guest Mode | VibeConnect</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body class="page">
+
+  <div class="box">
+    <h2>Guest Mode</h2>
+    <p class="muted">Enter a nickname and start chatting with other guests.</p>
+
+    {% if error %}
+      <p style="margin-top:10px; color:#ff6b6b; font-weight:800;">{{error}}</p>
+    {% endif %}
+
+    <form method="POST" style="margin-top:16px;">
+      {% csrf_token %}
+
+      <label>Nickname</label>
+      <input type="text" name="nickname" placeholder="e.g. Bunty" required />
+
+      <button class="btn primary full" type="submit" style="margin-top:16px;">Start Chat</button>
+    </form>
+
+    <p class="muted small" style="margin-top:16px;">
+      Guest mode has limited features and auto-ends after 30 minutes.
+    </p>
+
+    <a class="btn outline full" style="margin-top:12px;" href="/">Back</a>
+  </div>
+
+</body>
+</html>

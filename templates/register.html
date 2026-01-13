@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register | VibeConnect</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body class="page">
+
+  <div class="box wide">
+    <h2>Create Account</h2>
+    <p class="muted">
+      Email is only used for authentication. If you don’t want to use email, use a Custom ID (15+ characters).
+    </p>
+
+    {% if error %}
+      <p style="margin-top:10px; color:#ff6b6b; font-weight:800;">{{error}}</p>
+    {% endif %}
+
+    <form method="POST" style="margin-top:16px;">
+      {% csrf_token %}
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div>
+          <label>Name</label>
+          <input type="text" name="name" placeholder="Your name" />
+        </div>
+
+        <div>
+          <label>Nickname *</label>
+          <input type="text" name="nickname" placeholder="Displayed in chat" required />
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <label>Email (optional)</label>
+        <input type="email" name="email" placeholder="example@gmail.com" />
+      </div>
+
+      <div style="margin-top:14px;">
+        <label>Custom ID (optional if no email)</label>
+        <input type="text" name="custom_id" placeholder="6+ characters custom login id" />
+        
+      </div>
+
+      <div style="margin-top:14px;">
+        <label>Password *</label>
+        <input type="password" name="password" placeholder="Minimum 6 characters" required />
+      </div>
+
+      <button class="btn primary full" type="submit" style="margin-top:18px;">Register</button>
+    </form>
+
+    <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+      <a class="btn outline small" href="/login/">Already have account?</a>
+      <a class="btn outline small" href="/">Home</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

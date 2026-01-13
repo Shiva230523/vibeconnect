@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat | VibeConnect</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+
+<body class="chat-page">
+
+  <header class="chat-top">
+    <div class="brand">
+      <h2>VibeConnect</h2>
+      <p class="muted">You: <b>{{nickname}}</b></p>
+    </div>
+
+    <div class="top-actions">
+      {% if not is_guest %}
+        <a class="nav-link" href="/connections/">Connections</a>
+        <a class="nav-link" href="/requests/">Requests</a>
+        <a class="nav-link danger" href="/logout/">Logout</a>
+      {% else %}
+        <a class="nav-link danger" href="/">Exit</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="chat-wrap">
+
+    <div class="status-card">
+      <p class="status" id="status">Connecting...</p>
+      <p class="muted small" id="partnerInfo">No match yet.</p>
+    </div>
+
+    <div id="messages" class="messages"></div>
+
+    <div class="controls">
+      <button id="skipBtn" class="btn outline full">
+        Skip / Next
+      </button>
+
+      {% if not is_guest %}
+      <button id="interestedBtn" class="btn primary full" disabled>
+        Interested (unlock after 5 messages)
+      </button>
+      {% endif %}
+    </div>
+
+    {% if not is_guest %}
+    <!-- NO JSON: hidden form -->
+    <form id="saveForm" method="POST" action="/save-connection/" style="display:none;">
+      {% csrf_token %}
+      <input type="hidden" name="other_user_id" id="saveUserId">
+      <input type="hidden" name="other_nickname" id="saveNick">
+    </form>
+    {% endif %}
+
+    <div class="input-row">
+      <input id="msgInput" class="chat-input" placeholder="Type message..." autocomplete="off"/>
+      <button id="sendBtn" class="btn primary">Send</button>
+    </div>
+
+    {% if is_guest %}
+    <p class="guest-note">
+      Guest mode: limited features. After 30 minutes you will be asked to login.
+    </p>
+    {% endif %}
+
+  </main>
+
+  <script>
+  window.IS_GUEST = "{{ is_guest|yesno:'true,false' }}" === "true";
+</script>
+  <script src="/static/chat.js"></script>
+
+  {% if is_guest %}
+  <script>
+    // Guest 30 mins popup
+    setTimeout(() => {
+      alert("Guest mode ended (30 minutes). Login to unlock full features like connections + reconnect.");
+      window.location.href = "/login/";
+    }, 1800000);
+  </script>
+  {% endif %}
+
+</body>
+</html>

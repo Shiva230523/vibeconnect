@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Requests | VibeConnect</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+
+<body class="page">
+
+  <div class="box wide">
+
+    <div class="page-head">
+      <h2>Reconnect Requests</h2>
+      <a class="btn outline small" href="/chat/">Back to Chat</a>
+    </div>
+
+    <div class="list">
+      {% for r in requests %}
+      <div class="item">
+        <div class="item-left">
+          <div class="avatar">R</div>
+          <div>
+            <div class="item-title">Request from: {{r.from_user.username}}</div>
+            <div class="muted small">{{r.created_at}}</div>
+          </div>
+        </div>
+
+        <div class="item-actions">
+          <a class="btn small primary" href="/requests/accept/{{r.id}}/">Accept</a>
+          <a class="btn small outline danger" href="/requests/reject/{{r.id}}/">Reject</a>
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty">No reconnect requests.</div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+</body>
+</html>
